@@ -1,0 +1,13 @@
+{
+  "name": "clausehash",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Private, client-side document hashing and wallet-signed attestations.",
+  "scripts": {
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
