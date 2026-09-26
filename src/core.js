@@ -13,3 +13,16 @@ export async function hashText(text) {
   const digest = await globalThis.crypto.subtle.digest('SHA-256', bytes);
   return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, '0')).join('');
 }
+
+export function createAttestationMessage({ title, jurisdiction, hash, createdAt }) {
+  return [
+    'ClauseHash Document Attestation',
+    '',
+    `Title: ${title}`,
+    `Jurisdiction: ${jurisdiction}`,
+    `SHA-256: ${hash}`,
+    `Created: ${createdAt}`,
+    '',
+    'I attest that I reviewed the document represented by this hash.'
+  ].join('\n');
+}
