@@ -80,6 +80,36 @@ $('#export-button').addEventListener('click', () => {
   setCreateStatus('Receipt exported. Store it with access controls appropriate for its metadata.');
 });
 
+$('#receipt-file').addEventListener('change', async (event) => {
+  const [file] = event.target.files;
+  if (!file) return;
+  try {
+    importedReceipt = JSON.parse(await file.text());
+    $('#file-name').textContent = file.name;
+    showVerification('Receipt loaded. Paste the document text, then verify.', '');
+  } catch {
+    importedReceipt = null;
+    showVerification('The selected file is not valid JSON.', 'failure');
+  }
+});
+
+$('#verify-button').addEventListener('click', async () => {
+  if (!importedReceipt) {
+    showVerification('Choose a ClauseHash receipt first.', 'failure');
+    return;
+  }
+  try {
+    const result = await verifyReceiptHash(importedReceipt, $('#verification-text').value);
+    if (result.valid) {
+      showVerification(`Hash match — this text is consistent with “${importedReceipt.title || 'Untitled'}”.`, 'success', result.actualHash);
+    } else {
+      showVerification('Hash mismatch — this is not the same canonical document text.', 'failure', `Expected ${result.expectedHash}\nActual   ${result.actualHash}`);
+    }
+  } catch (error) {
+    showVerification(error.message, 'failure');
+  }
+});
+
 function setCreateStatus(message, isError = false) {
   $('#create-status').textContent = message;
   $('#create-status').classList.toggle('error', isError);
