@@ -4,7 +4,8 @@ import {
   buildReceipt,
   canonicalizeText,
   createAttestationMessage,
-  hashText
+  hashText,
+  verifyReceiptHash
 } from '../src/core.js';
 
 test('canonicalizeText normalizes line endings and trims trailing whitespace', () => {
@@ -63,4 +64,20 @@ test('buildReceipt includes verifiable metadata without document text', () => {
     message: 'attestation'
   });
   assert.equal('text' in receipt, false);
+});
+
+test('verifyReceiptHash reports whether supplied text matches an imported receipt', async () => {
+  const documentHash = await hashText('Confidential terms');
+  const receipt = { format: 'clausehash-receipt', version: 1, documentHash };
+
+  assert.deepEqual(await verifyReceiptHash(receipt, 'Confidential terms\r\n'), {
+    valid: true,
+    expectedHash: documentHash,
+    actualHash: documentHash
+  });
+
+  const mismatch = await verifyReceiptHash(receipt, 'Changed terms');
+  assert.equal(mismatch.valid, false);
+  assert.equal(mismatch.expectedHash, documentHash);
+  assert.notEqual(mismatch.actualHash, documentHash);
 });

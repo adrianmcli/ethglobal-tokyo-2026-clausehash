@@ -42,3 +42,17 @@ export function buildReceipt({ title, jurisdiction, hash, createdAt, account, si
     message
   };
 }
+
+export async function verifyReceiptHash(receipt, text) {
+  if (receipt?.format !== 'clausehash-receipt' || receipt?.version !== 1 ||
+      !/^[a-f0-9]{64}$/i.test(receipt?.documentHash ?? '')) {
+    throw new Error('Unsupported or malformed ClauseHash receipt.');
+  }
+
+  const actualHash = await hashText(text);
+  return {
+    valid: actualHash.toLowerCase() === receipt.documentHash.toLowerCase(),
+    expectedHash: receipt.documentHash,
+    actualHash
+  };
+}
