@@ -26,3 +26,19 @@ export function createAttestationMessage({ title, jurisdiction, hash, createdAt 
     'I attest that I reviewed the document represented by this hash.'
   ].join('\n');
 }
+
+export function buildReceipt({ title, jurisdiction, hash, createdAt, account, signature, message }) {
+  return {
+    format: 'clausehash-receipt',
+    version: 1,
+    title,
+    jurisdiction,
+    algorithm: 'SHA-256',
+    canonicalization: 'line-endings-lf; trailing-whitespace-trimmed; outer-whitespace-trimmed',
+    documentHash: hash,
+    createdAt,
+    signer: account,
+    signature,
+    message
+  };
+}

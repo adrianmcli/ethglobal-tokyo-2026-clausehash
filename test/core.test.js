@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
+  buildReceipt,
   canonicalizeText,
   createAttestationMessage,
   hashText
@@ -35,4 +36,31 @@ test('createAttestationMessage produces a stable human-readable statement', () =
     '',
     'I attest that I reviewed the document represented by this hash.'
   ].join('\n'));
+});
+
+test('buildReceipt includes verifiable metadata without document text', () => {
+  const receipt = buildReceipt({
+    title: 'Mutual NDA',
+    jurisdiction: 'Japan',
+    hash: 'abc123',
+    createdAt: '2026-09-26T15:00:00.000Z',
+    account: '0xabc',
+    signature: '0xsigned',
+    message: 'attestation'
+  });
+
+  assert.deepEqual(receipt, {
+    format: 'clausehash-receipt',
+    version: 1,
+    title: 'Mutual NDA',
+    jurisdiction: 'Japan',
+    algorithm: 'SHA-256',
+    canonicalization: 'line-endings-lf; trailing-whitespace-trimmed; outer-whitespace-trimmed',
+    documentHash: 'abc123',
+    createdAt: '2026-09-26T15:00:00.000Z',
+    signer: '0xabc',
+    signature: '0xsigned',
+    message: 'attestation'
+  });
+  assert.equal('text' in receipt, false);
 });
