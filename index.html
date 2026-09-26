@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Create private, wallet-signed SHA-256 document attestations in your browser.">
+  <title>ClauseHash — Private document attestations</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#">Clause<span>Hash</span></a>
+    <div class="privacy-pill"><i></i> Local-first · no uploads</div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <p class="eyebrow">Document integrity, without disclosure</p>
+      <h1>Sign the fingerprint.<br><em>Keep the text private.</em></h1>
+      <p class="lede">Create a portable proof that an Ethereum account attested to a specific legal document. Your document never leaves this browser.</p>
+      <div class="steps" aria-label="Workflow"><span>01 Hash</span><b></b><span>02 Sign</span><b></b><span>03 Verify</span></div>
+    </section>
+
+    <section class="workspace" aria-label="ClauseHash workspace">
+      <nav class="tabs" aria-label="Tools">
+        <button class="tab active" data-panel="create-panel">Create attestation</button>
+        <button class="tab" data-panel="verify-panel">Verify receipt</button>
+      </nav>
+
+      <div id="create-panel" class="panel active">
+        <form id="document-form">
+          <div class="field-row">
+            <label>Document title<input id="document-title" required maxlength="120" placeholder="e.g. Mutual NDA — Acme / Counsel"></label>
+            <label>Jurisdiction<input id="jurisdiction" required maxlength="80" placeholder="e.g. Japan"></label>
+          </div>
+          <label>Document text<textarea id="document-text" required rows="11" placeholder="Paste the complete document here. It stays on this device."></textarea></label>
+          <p class="field-note">Line endings and trailing whitespace are normalized before hashing. The original text is never included in the receipt.</p>
+          <button id="prepare-button" class="primary" type="submit">Generate document hash <span>→</span></button>
+        </form>
+
+        <section id="attestation-card" class="result-card hidden" aria-live="polite">
+          <div class="result-heading"><div><p class="eyebrow">SHA-256 fingerprint</p><h2>Attestation ready</h2></div><span class="status-dot">Prepared</span></div>
+          <code id="hash-output"></code>
+          <details><summary>Review the message you will sign</summary><pre id="message-output"></pre></details>
+          <div class="actions">
+            <button id="connect-button" class="secondary" type="button">Connect wallet</button>
+            <button id="sign-button" class="primary" type="button" disabled>Sign attestation</button>
+            <button id="export-button" class="secondary" type="button" disabled>Export JSON receipt</button>
+          </div>
+          <p id="create-status" class="status-text"></p>
+        </section>
+      </div>
+
+      <div id="verify-panel" class="panel" hidden>
+        <div class="verify-intro"><p class="eyebrow">Independent local check</p><h2>Verify a ClauseHash receipt</h2><p>Import a receipt and paste the document text. ClauseHash recomputes the canonical SHA-256 hash locally.</p></div>
+        <label class="file-drop" for="receipt-file"><strong>Choose receipt JSON</strong><span id="file-name">No file selected</span><input id="receipt-file" type="file" accept="application/json,.json"></label>
+        <label>Document text to verify<textarea id="verification-text" rows="9" placeholder="Paste the document text to compare with the receipt…"></textarea></label>
+        <button id="verify-button" class="primary" type="button">Verify hash consistency</button>
+        <div id="verification-result" class="verification-result" aria-live="polite"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer><span>ClauseHash · ETHGlobal Tokyo 2026</span><span>No contract deployment · No network required except wallet injection</span></footer>
+  <script type="module" src="./src/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+:root { color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: system-ui, sans-serif; background: #0d0f0c; color: #f4f1e8; }
+main, .site-header, footer { width: min(920px, calc(100% - 40px)); margin: auto; }
+.panel:not(.active), .hidden { display: none; }
+input, textarea, button { font: inherit; }
